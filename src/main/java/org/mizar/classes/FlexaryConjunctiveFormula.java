@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -10,7 +11,7 @@ import org.dom4j.*;
 public class FlexaryConjunctiveFormula extends BinaryFormula {
 
     public FlexaryConjunctiveFormula(Element element) {
-        super(element);
+        super(element, Connectives.FLEX_CONJUNCTION);
     }
 
     @Override
@@ -24,5 +25,15 @@ public class FlexaryConjunctiveFormula extends BinaryFormula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        //TODO spaces
+        return new Representation(getFormula1().texRepr(representationCase)
+                + LaTeX.bf(Texts.AND)
+                + LaTeX.bf(LaTeX.ensureMath("\\dots"))
+                + LaTeX.bf(Texts.AND)
+                + getFormula2().texRepr(representationCase));
     }
 }

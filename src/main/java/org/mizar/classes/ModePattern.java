@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class ModePattern extends Pattern {
 
     public ModePattern(Element element) {
         super(element);
-        loci = new Loci(element.element(ElementNames.LOCI));
+        loci = new Loci(element.element(ESXElementName.LOCI));
     }
 
     @Override
@@ -29,5 +31,15 @@ public class ModePattern extends Pattern {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "M";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texReprMode(this,this.loci);
     }
 }

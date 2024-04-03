@@ -3,6 +3,7 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -11,6 +12,8 @@ import org.dom4j.*;
 public class VariableSegments extends XMLElement {
 
     private List<QualifiedSegment> segments = new LinkedList<>();
+
+    private Integer varNbrVS = 0;
 
     public VariableSegments(Element element) {
         super(element);
@@ -33,6 +36,18 @@ public class VariableSegments extends XMLElement {
 
     @Override
     public void postProcess() {
+        for (QualifiedSegment qualifiedSegment: segments) {
+            varNbrVS += qualifiedSegment.getVarNbrSgm();
+        }
         super.postProcess();
+    }
+
+    boolean plural() {
+        return varNbrVS > 1;
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.texReprTextAnd(segments,representationCase));
     }
 }

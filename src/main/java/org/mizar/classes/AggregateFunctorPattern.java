@@ -2,18 +2,19 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
 @ToString
 
-public class AggregateFunctorPattern extends XMLElement {
+public class AggregateFunctorPattern extends Pattern {
 
     private Loci loci;
 
     public AggregateFunctorPattern(Element element) {
         super(element);
-        loci = new Loci(element.element(ElementNames.LOCI));
+        loci = new Loci(element.element(ESXElementName.LOCI));
     }
 
     @Override
@@ -30,4 +31,7 @@ public class AggregateFunctorPattern extends XMLElement {
     public void postProcess() {
         super.postProcess();
     }
+
+    @Override
+    public String kind() { return "G"; }
 }

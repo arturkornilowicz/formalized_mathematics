@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class PrivatePredicateFormula extends Formula {
 
     public PrivatePredicateFormula(Element element) {
         super(element);
-        arguments = new Arguments(element.element(ElementNames.ARGUMENTS));
+        arguments = new Arguments(element.element(ESXElementName.ARGUMENTS));
     }
 
     @Override
@@ -29,5 +31,10 @@ public class PrivatePredicateFormula extends Formula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.ensureMath(LaTeX.mathcal(LaTeX.spelling(this)) + "[" + arguments.texRepr(RepresentationCase.ARGS_IN_PRIVATE) + "]"));
     }
 }

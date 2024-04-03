@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class SingleAssumption extends Assumption {
 
     public SingleAssumption(Element element) {
         super(element);
-        proposition = new Proposition(element.element(ElementNames.PROPOSITION));
+        proposition = new Proposition(element.element(ESXElementName.PROPOSITION));
     }
 
     @Override
@@ -29,5 +31,10 @@ public class SingleAssumption extends Assumption {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(Texts.S8 + proposition.texRepr(representationCase) + ".");
     }
 }

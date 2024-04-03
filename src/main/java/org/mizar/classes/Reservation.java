@@ -3,6 +3,8 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class Reservation extends Item {
 
     public Reservation(Element element) {
         super(element);
-        for (Element element1: element.elements(ElementNames.RESERVATION_SEGMENT)) {
+        for (Element element1: element.elements(ESXElementName.RESERVATION_SEGMENT)) {
             segments.add(new ReservationSegment(element1));
         }
     }
@@ -22,6 +24,7 @@ public class Reservation extends Item {
     @Override
     public void preProcess() {
         super.preProcess();
+        setLatexOutput(Texts.R1);
     }
 
     @Override
@@ -33,6 +36,12 @@ public class Reservation extends Item {
 
     @Override
     public void postProcess() {
+        setLatexOutput(getLatexOutput() + texRepr(RepresentationCase.GENERAL) + ".");
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.texReprTextAnd(segments,representationCase));
     }
 }

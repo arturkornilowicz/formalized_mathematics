@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class ExplicitlyQualifiedSegment extends QualifiedSegment {
 
     public ExplicitlyQualifiedSegment(Element element) {
         super(element);
-        variables = new Variables(element.element(ElementNames.VARIABLES));
+        variables = new Variables(element.element(ESXElementName.VARIABLES));
         type = Type.buildType(element.elements().get(1));
     }
 
@@ -32,5 +34,11 @@ public class ExplicitlyQualifiedSegment extends QualifiedSegment {
     @Override
     public void postProcess() {
         super.postProcess();
+        setVarNbrSgm(getVariables().getVariables().size());
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(variables.texRepr(representationCase) + Texts.BE + type.texRepr(representationCase).repr);
     }
 }

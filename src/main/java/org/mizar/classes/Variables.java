@@ -3,6 +3,8 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class Variables extends XMLElement {
 
     public Variables(Element element) {
         super(element);
-        for (Element element1: element.elements(ElementNames.VARIABLE)) {
+        for (Element element1: element.elements(ESXElementName.VARIABLE)) {
             variables.add(new Variable(element1));
         }
     }
@@ -34,5 +36,10 @@ public class Variables extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.texReprMath(variables));
     }
 }

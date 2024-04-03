@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.ESXElementName;
 
 @Setter
 @Getter
@@ -9,28 +11,29 @@ import org.dom4j.*;
 
 public class Reduction extends Item {
 
-    private Term term1;
-    private Term term2;
+    private Redex redex;
+    private Reduct reduct;
 
     public Reduction(Element element) {
         super(element);
-        term1 = Term.buildTerm(element.elements().get(0));
-        term2 = Term.buildTerm(element.elements().get(1));
+        redex = new Redex(element.element(ESXElementName.REDEX));
+        reduct = new Reduct(element.element(ESXElementName.REDUCT));
     }
 
     @Override
-    public void preProcess() {
-        super.preProcess();
-    }
+    public void preProcess() { super.preProcess(); }
 
     @Override
     public void process() {
-        term1.run();
-        term2.run();
+        redex.run();
+        reduct.run();
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.ensureMath(redex.texRepr(representationCase).repr) + Texts.T3 + LaTeX.ensureMath(reduct.texRepr(representationCase).repr));
     }
 }

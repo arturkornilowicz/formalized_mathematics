@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class PropositionalConclusion extends Conclusion {
 
     public PropositionalConclusion(Element element) {
         super(element);
-        proposition = new Proposition(element.element(ElementNames.PROPOSITION));
+        proposition = new Proposition(element.element(ESXElementName.PROPOSITION));
         justification = Justification.buildJustification(element.elements().get(1));
     }
 
@@ -33,4 +35,7 @@ public class PropositionalConclusion extends Conclusion {
     public void postProcess() {
         super.postProcess();
     }
+
+    @Override
+    public Representation texRepr(Integer representationCase) { return new Representation(""); }
 }

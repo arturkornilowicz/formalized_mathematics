@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class PropertyRegistration extends Item {
 
     public PropertyRegistration(Element element) {
         super(element);
-        properties = new Properties(element.element(ElementNames.PROPERTIES));
+        properties = new Properties(element.element(ESXElementName.PROPERTIES));
         justification = Justification.buildJustification(element.elements().get(1));
     }
 
@@ -30,7 +32,10 @@ public class PropertyRegistration extends Item {
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess()  { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return properties.texRepr(representationCase);
     }
 }

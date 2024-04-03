@@ -3,6 +3,8 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class PartialDefiniensList extends XMLElement {
 
     public PartialDefiniensList(Element element) {
         super(element);
-        for (Element element1: element.elements(ElementNames.PARTIAL_DEFINIENS)) {
+        for (Element element1: element.elements(ESXElementName.PARTIAL_DEFINIENS)) {
             partialDefiniensList.add(PartialDefiniens.buildPartialDefiniens(element1));
         }
     }
@@ -34,5 +36,16 @@ public class PartialDefiniensList extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        String result = "";
+        int i;
+        for (i = 0; i < partialDefiniensList.size()-1; i++) {
+            result += "\n\\item" + partialDefiniensList.get(i).texRepr(representationCase) + ",";
+        }
+        result += "\n\\item" + partialDefiniensList.get(i).texRepr(representationCase) + ";";
+        return new Representation(result);
     }
 }

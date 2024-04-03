@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -29,5 +30,13 @@ public class ForgetfulFunctorTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() { return "J"; }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.text("the " + Translation.texRepr(this,term)));
     }
 }

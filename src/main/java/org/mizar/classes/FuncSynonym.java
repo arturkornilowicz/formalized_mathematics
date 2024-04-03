@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,7 +17,7 @@ public class FuncSynonym extends Item {
     public FuncSynonym(Element element) {
         super(element);
         functorPattern = FunctorPattern.buildFunctorPattern(element.elements().get(0));
-        patternShapedExpression = new PatternShapedExpression(element.element(ElementNames.PATTERN_SHAPED_EXPRESSION));
+        patternShapedExpression = new PatternShapedExpression(element.element(ESXElementName.PATTERN_SHAPED_EXPRESSION));
     }
 
     @Override
@@ -32,5 +34,10 @@ public class FuncSynonym extends Item {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(Texts.T5 + functorPattern.texRepr(representationCase) + Texts.T6s + patternShapedExpression.texRepr(representationCase) + ".");
     }
 }

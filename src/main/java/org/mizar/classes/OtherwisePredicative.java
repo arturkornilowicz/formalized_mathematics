@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -33,5 +34,10 @@ public class OtherwisePredicative extends Otherwise {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(formula != null ? "\n\\item" + formula.texRepr(representationCase) + ", " + Texts.OTHERWISE + "." : "");
     }
 }

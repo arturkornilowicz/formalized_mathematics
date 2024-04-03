@@ -2,18 +2,19 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
 @ToString
 
-public class ForgetfulFunctorPattern extends XMLElement {
+public class ForgetfulFunctorPattern extends Pattern {
 
     private Loci loci;
 
     public ForgetfulFunctorPattern(Element element) {
         super(element);
-        loci = new Loci(element.element(ElementNames.LOCI));
+        loci = new Loci(element.element(ESXElementName.LOCI));
     }
 
     @Override

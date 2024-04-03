@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class Correctness extends Item {
 
     public Correctness(Element element) {
         super(element);
-        correctnessConditions = new CorrectnessConditions(element.element(ElementNames.CORRECTNESS_CONDITIONS));
+        correctnessConditions = new CorrectnessConditions(element.element(ESXElementName.CORRECTNESS_CONDITIONS));
         justification = Justification.buildJustification(element.elements().get(1));
     }
 
@@ -32,5 +34,11 @@ public class Correctness extends Item {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        //TODO required in proofs
+        return new Representation("");
     }
 }

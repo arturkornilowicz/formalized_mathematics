@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -17,9 +18,7 @@ public class NegatedFormula extends Formula {
     }
 
     @Override
-    public void preProcess() {
-        super.preProcess();
-    }
+    public void preProcess() { super.preProcess(); }
 
     @Override
     public void process() {
@@ -27,7 +26,10 @@ public class NegatedFormula extends Formula {
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(" not " + formula.texRepr(representationCase));
     }
 }

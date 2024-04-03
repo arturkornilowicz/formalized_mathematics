@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class ClusteredType extends Type {
 
     public ClusteredType(Element element) {
         super(element);
-        adjectiveCluster = new AdjectiveCluster(element.element(ElementNames.ADJECTIVE_CLUSTER));
+        adjectiveCluster = new AdjectiveCluster(element.element(ESXElementName.ADJECTIVE_CLUSTER));
         type = Type.buildType(element.elements().get(1));
     }
 
@@ -32,5 +34,13 @@ public class ClusteredType extends Type {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        Representation typeRepr = type.texRepr(representationCase);
+        String firstAttr = adjectiveCluster.getAttributes().get(0).texRepr(representationCase).repr;
+        String preposition = typeRepr.plural ? "" : LaTeX.preposition(firstAttr);
+        return new Representation(preposition + adjectiveCluster.texRepr(representationCase) + " " + typeRepr);
     }
 }

@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -33,5 +34,10 @@ public class OtherwiseEquational extends Otherwise {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(term != null ? "\n\\item" + term.texRepr(representationCase) + ", " + Texts.OTHERWISE + "." : "");
     }
 }

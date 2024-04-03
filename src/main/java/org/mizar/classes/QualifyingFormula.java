@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -32,5 +33,10 @@ public class QualifyingFormula extends Formula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(term.texRepr(representationCase) + Texts.IS + type.texRepr(RepresentationCase.ADJECTIVES_WITH_TYPE));
     }
 }

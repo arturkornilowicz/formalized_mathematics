@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -33,5 +34,20 @@ public class Properties extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        if (type != null) {
+            return new Representation(Texts.T2c
+                    + LaTeX.propertyName(getElement())
+                    + Texts.PROPERTY
+                    + Texts.HOLDS
+                    + Texts.FOR
+                    + type.texRepr(representationCase)
+                    + ".");
+        } else {
+            return new Representation(LaTeX.propertyName(getElement()));
+        }
     }
 }

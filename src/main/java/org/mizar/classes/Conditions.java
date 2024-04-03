@@ -3,6 +3,8 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,7 +16,7 @@ public class Conditions extends XMLElement {
 
     public Conditions(Element element) {
         super(element);
-        for (Element element1: element.elements(ElementNames.PROPOSITION)) {
+        for (Element element1: element.elements(ESXElementName.PROPOSITION)) {
             propositions.add(new Proposition(element1));
         }
     }
@@ -34,5 +36,11 @@ public class Conditions extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        //TODO Various translations
+        return new Representation(LaTeX.texReprTextAnd(propositions,representationCase));
     }
 }

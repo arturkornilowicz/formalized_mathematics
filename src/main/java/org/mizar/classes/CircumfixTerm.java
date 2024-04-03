@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,8 +16,8 @@ public class CircumfixTerm extends Term {
 
     public CircumfixTerm(Element element) {
         super(element);
-        rightCircumflexSymbol = new RightCircumflexSymbol(element.element(ElementNames.RIGHT_CIRCUMFLEX_SYMBOL));
-        arguments = new Arguments(element.element(ElementNames.ARGUMENTS));
+        rightCircumflexSymbol = new RightCircumflexSymbol(element.element(ESXElementName.RIGHT_CIRCUMFLEX_SYMBOL));
+        arguments = new Arguments(element.element(ESXElementName.ARGUMENTS));
     }
 
     @Override
@@ -32,5 +34,15 @@ public class CircumfixTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "K";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texRepr(this,this.arguments);
     }
 }

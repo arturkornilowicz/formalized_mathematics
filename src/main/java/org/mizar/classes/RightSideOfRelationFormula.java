@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class RightSideOfRelationFormula extends Formula {
 
     public RightSideOfRelationFormula(Element element) {
         super(element);
-        arguments = new Arguments(element.element(ElementNames.ARGUMENTS));
+        arguments = new Arguments(element.element(ESXElementName.ARGUMENTS));
     }
 
     @Override
@@ -29,5 +31,13 @@ public class RightSideOfRelationFormula extends Formula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() { return "R"; }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texRepr(this,arguments,true);
     }
 }

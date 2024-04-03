@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,8 +16,8 @@ public class AttrSynonym extends Item {
 
     public AttrSynonym(Element element) {
         super(element);
-        attributePattern = new AttributePattern(element.element(ElementNames.ATTRIBUTE_PATTERN));
-        patternShapedExpression = new PatternShapedExpression(element.element(ElementNames.PATTERN_SHAPED_EXPRESSION));
+        attributePattern = new AttributePattern(element.element(ESXElementName.ATTRIBUTE_PATTERN));
+        patternShapedExpression = new PatternShapedExpression(element.element(ESXElementName.PATTERN_SHAPED_EXPRESSION));
     }
 
     @Override
@@ -32,5 +34,18 @@ public class AttrSynonym extends Item {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        String subject = LaTeX.varRepr(LaTeX.spelling(attributePattern.getLocus()));
+        return new Representation(Texts.T5
+                + subject
+                + Texts.IS
+                + attributePattern.texRepr(representationCase)
+                + Texts.T6s
+                + subject
+                + Texts.IS
+                + patternShapedExpression.texRepr(representationCase) + ".");
     }
 }

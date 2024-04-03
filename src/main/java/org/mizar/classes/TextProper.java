@@ -1,6 +1,5 @@
 package org.mizar.classes;
 
-import java.util.*;
 import lombok.*;
 import org.dom4j.*;
 
@@ -8,15 +7,10 @@ import org.dom4j.*;
 @Getter
 @ToString
 
-public class TextProper extends XMLElement {
-
-    private List<Item> items = new LinkedList<>();
+public class TextProper extends Block {
 
     public TextProper(Element element) {
         super(element);
-        for (Element element1: element.elements(ElementNames.ITEM)) {
-            items.add(Item.buildItem(element1));
-        }
     }
 
     @Override
@@ -25,14 +19,8 @@ public class TextProper extends XMLElement {
     }
 
     @Override
-    public void process() {
-        for (Item item: items) {
-            item.run();
-        }
-    }
+    public void process() { super.process(); }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
-    }
+    public void postProcess() { super.postProcess(); }
 }

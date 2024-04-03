@@ -3,6 +3,7 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -35,4 +36,10 @@ public class TypeList extends XMLElement {
     public void postProcess() {
         super.postProcess();
     }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.texReprText(typeList));
+    }
+
 }

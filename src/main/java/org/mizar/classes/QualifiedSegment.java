@@ -3,6 +3,7 @@ package org.mizar.classes;
 import lombok.*;
 import org.dom4j.*;
 import org.mizar.misc.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -10,17 +11,19 @@ import org.mizar.misc.*;
 
 public class QualifiedSegment extends XMLElement {
 
+    private Integer varNbrSgm = 0;
+
     public QualifiedSegment(Element element) {
         super(element);
     }
 
     public static QualifiedSegment buildQualifiedSegment(Element element) {
         switch (element.getName()) {
-            case ElementNames.EXPLICITLY_QUALIFIED_SEGMENT:
+            case ESXElementName.EXPLICITLY_QUALIFIED_SEGMENT:
                 return new ExplicitlyQualifiedSegment(element);
-            case ElementNames.FREE_VARIABLE_SEGMENT:
+            case ESXElementName.FREE_VARIABLE_SEGMENT:
                 return new FreeVariableSegment(element);
-            case ElementNames.IMPLICITLY_QUALIFIED_SEGMENT:
+            case ESXElementName.IMPLICITLY_QUALIFIED_SEGMENT:
                 return new ImplicitlyQualifiedSegment(element);
             default:
                 Errors.error(element, "Missing Element in buildQualifiedSegment [" + element.getName() + "]");

@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,8 +16,8 @@ public class LociEquality extends XMLElement {
 
     public LociEquality(Element element) {
         super(element);
-        locus1 = new Locus(element.elements(ElementNames.LOCUS).get(0));
-        locus2 = new Locus(element.elements(ElementNames.LOCUS).get(1));
+        locus1 = new Locus(element.elements(ESXElementName.LOCUS).get(0));
+        locus2 = new Locus(element.elements(ESXElementName.LOCUS).get(1));
     }
 
     @Override
@@ -32,5 +34,10 @@ public class LociEquality extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(locus1.texRepr(representationCase) + " = " + locus2.texRepr(representationCase));
     }
 }

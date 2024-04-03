@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -24,5 +25,14 @@ public class InternalSelectorTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() { return "U"; }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        //TODO their
+        return new Representation(LaTeX.text("the " + Translation.texRepr(this)));
     }
 }

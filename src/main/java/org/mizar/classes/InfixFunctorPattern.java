@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,8 +16,8 @@ public class InfixFunctorPattern extends FunctorPattern {
 
     public InfixFunctorPattern(Element element) {
         super(element);
-        leftLoci = new Loci(element.elements(ElementNames.LOCI).get(0));
-        rightLoci = new Loci(element.elements(ElementNames.LOCI).get(1));
+        leftLoci = new Loci(element.elements(ESXElementName.LOCI).get(0));
+        rightLoci = new Loci(element.elements(ESXElementName.LOCI).get(1));
     }
 
     @Override
@@ -32,5 +34,15 @@ public class InfixFunctorPattern extends FunctorPattern {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "O";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texRepr(this,this.leftLoci,this.rightLoci);
     }
 }

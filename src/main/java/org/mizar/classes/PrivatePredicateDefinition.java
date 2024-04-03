@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,8 +17,8 @@ public class PrivatePredicateDefinition extends Item {
 
     public PrivatePredicateDefinition(Element element) {
         super(element);
-        variable = new Variable(element.element(ElementNames.VARIABLE));
-        typeList = new TypeList(element.element(ElementNames.TYPE_LIST));
+        variable = new Variable(element.element(ESXElementName.VARIABLE));
+        typeList = new TypeList(element.element(ESXElementName.TYPE_LIST));
         formula = Formula.buildFormula(element.elements().get(2));
     }
 
@@ -35,5 +37,12 @@ public class PrivatePredicateDefinition extends Item {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation("Let " + variable.texRepr(representationCase).repr
+                + " over " + typeList.texRepr(representationCase)
+                + " be the statement " + formula.texRepr(representationCase) + ". ");
     }
 }

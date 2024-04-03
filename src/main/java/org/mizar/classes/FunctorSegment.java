@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,9 +17,9 @@ public class FunctorSegment extends SchematicVariableSegment {
 
     public FunctorSegment(Element element) {
         super(element);
-        variables = new Variables(element.element(ElementNames.VARIABLES));
-        typeList = new TypeList(element.element(ElementNames.TYPE_LIST));
-        typeSpecification = new TypeSpecification(element.element(ElementNames.TYPE_SPECIFICATION));
+        variables = new Variables(element.element(ESXElementName.VARIABLES));
+        typeList = new TypeList(element.element(ESXElementName.TYPE_LIST));
+        typeSpecification = new TypeSpecification(element.element(ESXElementName.TYPE_SPECIFICATION));
     }
 
     @Override
@@ -35,5 +37,11 @@ public class FunctorSegment extends SchematicVariableSegment {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(typeSpecification.texRepr(representationCase) + " "
+                + LaTeX.texReprMathCal(variables.getVariables()));
     }
 }

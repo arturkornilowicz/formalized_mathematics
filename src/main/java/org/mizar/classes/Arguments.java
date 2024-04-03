@@ -3,6 +3,7 @@ package org.mizar.classes;
 import java.util.*;
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -34,5 +35,15 @@ public class Arguments extends XMLElement {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        boolean oneArg = arguments.size() == 1;
+        return switch (representationCase) {
+            case RepresentationCase.ARGS_IN_PRIVATE -> new Representation(LaTeX.texReprText(arguments));
+            default -> new Representation(arguments.size() != 0 ?
+                    (oneArg ? "" : LaTeX.ensureMath(Texts.LB1)) + LaTeX.texReprText(arguments) + (oneArg ? "" : LaTeX.ensureMath(Texts.RB1)) : "");
+        };
     }
 }

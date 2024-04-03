@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,7 +17,7 @@ public class FraenkelTerm extends Term {
 
     public FraenkelTerm(Element element) {
         super(element);
-        variableSegments = new VariableSegments(element.element(ElementNames.VARIABLE_SEGMENTS));
+        variableSegments = new VariableSegments(element.element(ESXElementName.VARIABLE_SEGMENTS));
         term = Term.buildTerm(element.elements().get(1));
         formula = Formula.buildFormula(element.elements().get(2));
     }
@@ -35,5 +37,18 @@ public class FraenkelTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        //TODO be -> is in where
+        String result = LaTeX.ensureMath("\\{");
+        result += term.texRepr(representationCase);
+        if (variableSegments.getSegments().size() > 0) {
+            result += LaTeX.text( Texts.WHERE + variableSegments.texRepr(representationCase));
+        }
+        result += ": " + formula.texRepr(representationCase);
+        result += LaTeX.ensureMath("\\}");
+        return new Representation(result);
     }
 }

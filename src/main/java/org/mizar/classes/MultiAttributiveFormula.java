@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,7 +17,7 @@ public class MultiAttributiveFormula extends Formula {
     public MultiAttributiveFormula(Element element) {
         super(element);
         term = Term.buildTerm(element.elements().get(0));
-        adjectiveCluster = new AdjectiveCluster(element.element(ElementNames.ADJECTIVE_CLUSTER));
+        adjectiveCluster = new AdjectiveCluster(element.element(ESXElementName.ADJECTIVE_CLUSTER));
     }
 
     @Override
@@ -32,5 +34,19 @@ public class MultiAttributiveFormula extends Formula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        String adjRepr = adjectiveCluster.texRepr(representationCase).repr;
+        String string = term.texRepr(representationCase).repr + " ";
+        //TODO
+//        string += switch (adjectiveCluster.getAdjectiveKind()) {
+//            case AdjectiveKind.SAT -> " satisfies ";
+//            case AdjectiveKind.HAS -> " has ";
+//            default -> " is ";
+//        };
+        string += adjRepr;
+        return new Representation(string);
     }
 }

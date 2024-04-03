@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -32,5 +33,15 @@ public class QualificationTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "O";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(term.texRepr(representationCase) + Texts.QUA + type.texRepr(representationCase));
     }
 }

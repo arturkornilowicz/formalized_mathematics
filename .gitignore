@@ -1,5 +1,8 @@
 .idea/
 target/
+temp/
+test/
+inputs/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -11,3 +14,5 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 esx_errors.txt
+run.bat
+run.sh

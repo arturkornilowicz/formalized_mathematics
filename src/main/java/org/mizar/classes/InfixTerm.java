@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class InfixTerm extends Term {
 
     public InfixTerm(Element element) {
         super(element);
-        arguments = new Arguments(element.element(ElementNames.ARGUMENTS));
+        arguments = new Arguments(element.element(ESXElementName.ARGUMENTS));
     }
 
     @Override
@@ -29,5 +31,15 @@ public class InfixTerm extends Term {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "O";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texReprInfix(this,this.arguments);
     }
 }

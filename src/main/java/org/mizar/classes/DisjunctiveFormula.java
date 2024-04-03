@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -10,7 +11,7 @@ import org.dom4j.*;
 public class DisjunctiveFormula extends BinaryFormula {
 
     public DisjunctiveFormula(Element element) {
-        super(element);
+        super(element, Connectives.DISJUNCTION);
     }
 
     @Override
@@ -24,5 +25,10 @@ public class DisjunctiveFormula extends BinaryFormula {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(getFormula1().texRepr(representationCase) + " or " + getFormula2().texRepr(representationCase));
     }
 }

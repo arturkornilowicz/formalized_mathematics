@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +14,7 @@ public class DefinitionItem extends Item {
 
     public DefinitionItem(Element element) {
         super(element);
-        block = Block.buildBlock(element.element(ElementNames.BLOCK));
+        block = Block.buildBlock(element.element(ESXElementName.BLOCK));
     }
 
     @Override
@@ -28,6 +29,7 @@ public class DefinitionItem extends Item {
 
     @Override
     public void postProcess() {
+        setLatexOutput(block.getLatexOutput());
         super.postProcess();
     }
 }

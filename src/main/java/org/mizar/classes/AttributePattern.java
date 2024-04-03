@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -14,8 +16,8 @@ public class AttributePattern extends Pattern {
 
     public AttributePattern(Element element) {
         super(element);
-        locus = new Locus(element.element(ElementNames.LOCUS));
-        loci = new Loci(element.element(ElementNames.LOCI));
+        locus = new Locus(element.element(ESXElementName.LOCUS));
+        loci = new Loci(element.element(ESXElementName.LOCI));
     }
 
     @Override
@@ -32,5 +34,15 @@ public class AttributePattern extends Pattern {
     @Override
     public void postProcess() {
         super.postProcess();
+    }
+
+    @Override
+    public String kind() {
+        return "V";
+    }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return Translation.texRepr(this,this.loci);
     }
 }

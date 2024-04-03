@@ -2,6 +2,7 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
 
 @Setter
 @Getter
@@ -22,7 +23,10 @@ public class Scheme extends XMLElement {
     public void process() {}
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(LaTeX.italic(LaTeX.spelling(this)));
     }
 }

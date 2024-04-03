@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,9 +17,9 @@ public class Identify extends Item {
 
     public Identify(Element element) {
         super(element);
-        leftPattern = new PatternShapedExpression(element.elements(ElementNames.PATTERN_SHAPED_EXPRESSION).get(0));
-        rightPattern = new PatternShapedExpression(element.elements(ElementNames.PATTERN_SHAPED_EXPRESSION).get(1));
-        lociEqualities = new LociEqualities(element.element(ElementNames.LOCI_EQUALITIES));
+        leftPattern = new PatternShapedExpression(element.elements(ESXElementName.PATTERN_SHAPED_EXPRESSION).get(0));
+        rightPattern = new PatternShapedExpression(element.elements(ESXElementName.PATTERN_SHAPED_EXPRESSION).get(1));
+        lociEqualities = new LociEqualities(element.element(ESXElementName.LOCI_EQUALITIES));
     }
 
     @Override
@@ -33,7 +35,14 @@ public class Identify extends Item {
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        String result = leftPattern.texRepr(representationCase) + Texts.T4 + rightPattern.texRepr(representationCase);
+        if (lociEqualities.getLociEqualities().size() > 0) {
+            result += " provided " + lociEqualities.texRepr(representationCase);
+        }
+        return new Representation(result);
     }
 }

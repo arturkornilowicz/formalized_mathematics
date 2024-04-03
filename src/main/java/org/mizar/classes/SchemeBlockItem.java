@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -13,7 +15,7 @@ public class SchemeBlockItem extends Item {
 
     public SchemeBlockItem(Element element) {
         super(element);
-        block = Block.buildBlock(element.element(ElementNames.BLOCK));
+        block = Block.buildBlock(element.element(ESXElementName.BLOCK));
     }
 
     @Override
@@ -27,7 +29,10 @@ public class SchemeBlockItem extends Item {
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        return new Representation(block.getLatexOutput());
     }
 }

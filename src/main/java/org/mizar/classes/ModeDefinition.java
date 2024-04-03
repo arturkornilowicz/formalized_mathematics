@@ -2,6 +2,8 @@ package org.mizar.classes;
 
 import lombok.*;
 import org.dom4j.*;
+import org.mizar.latex.*;
+import org.mizar.xml_names.*;
 
 @Setter
 @Getter
@@ -15,8 +17,8 @@ public class ModeDefinition extends Item {
 
     public ModeDefinition(Element element) {
         super(element);
-        redefine = new Redefine(element.element(ElementNames.REDEFINE));
-        modePattern = new ModePattern(element.element(ElementNames.MODE_PATTERN));
+        redefine = new Redefine(element.element(ESXElementName.REDEFINE));
+        modePattern = new ModePattern(element.element(ESXElementName.MODE_PATTERN));
         modePatternKind = ModePatternKind.buildModePatternKind(element.elements().get(2));
     }
 
@@ -33,7 +35,20 @@ public class ModeDefinition extends Item {
     }
 
     @Override
-    public void postProcess() {
-        super.postProcess();
+    public void postProcess() { super.postProcess(); }
+
+    @Override
+    public Representation texRepr(Integer representationCase) {
+        String result = "";
+        Representation patternRepr = modePattern.texRepr(representationCase);
+        //TODO WARNING with comment
+        String word = patternRepr.repr.substring("\\colorbox{green}{".length());
+        String preposition = LaTeX.preposition(word);
+        preposition = (""+preposition.charAt(0)).toUpperCase() + preposition.substring(1);
+        result += "\n" + preposition + modePattern.texRepr(representationCase) + modePatternKind.texRepr(representationCase);
+        if (redefine.getElement().attributeValue(ESXAttributeName.OCCURS).equals("true")) {
+            result += LaTeX.unfinished(this.getClass(),"REDEFINITION");
+        }
+        return new Representation(result);
     }
 }

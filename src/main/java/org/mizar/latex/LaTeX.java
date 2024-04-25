@@ -44,7 +44,7 @@ public class LaTeX {
         for (char c = 'A'; c <= 'Z'; ++c) {
             upperLetters.add("" + c);
         }
-        return upperLetters.contains(string) ? ensureMath("\\mathcal{" + string + "}") : ensureMath(string);
+        return upperLetters.contains(string) ? ensureMath("\\mathcal{" + string + "}") : string;
     }
 
     public static String colorbox(String string) {

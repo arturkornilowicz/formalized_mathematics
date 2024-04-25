@@ -41,11 +41,11 @@ public class MultiAttributiveFormula extends Formula {
         String adjRepr = adjectiveCluster.texRepr(representationCase).repr;
         String string = term.texRepr(representationCase).repr + " ";
         //TODO
-//        string += switch (adjectiveCluster.getAdjectiveKind()) {
-//            case AdjectiveKind.SAT -> " satisfies ";
-//            case AdjectiveKind.HAS -> " has ";
-//            default -> " is ";
-//        };
+        string += switch (adjectiveCluster.getAdjectiveKind()) {
+            case AdjectiveKind.SAT -> " satisfies ";
+            case AdjectiveKind.HAS -> " has ";
+            default -> " is ";
+        };
         string += adjRepr;
         return new Representation(string);
     }

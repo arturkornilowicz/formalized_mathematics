@@ -139,6 +139,15 @@ public class Translations extends LinkedList<Translation> {
             case ESXElementName.ATTRIBUTE -> translation.getKind().equals("V");
             case ESXElementName.ATTRIBUTE_PATTERN -> translation.getKind().equals("V");
 
+
+            //TODO artificial kinds
+            case ESXElementName.NUMERAL_TERM -> translation.getKind().equals("N");
+            case ESXElementName.SIMPLE_TERM -> translation.getKind().equals("N");
+            case ESXElementName.IT_TERM -> translation.getKind().equals("N");
+            case ESXElementName.FRAENKEL_TERM -> translation.getKind().equals("N");
+            case ESXElementName.PLACEHOLDER_TERM -> translation.getKind().equals("N");
+            case ESXElementName.PRIVATE_FUNCTOR_TERM -> translation.getKind().equals("N");
+
             default -> throw new RuntimeException("UNKNOWN ESX Element Kind: " + element.getName() + " " + translation.getKind());
         };
     }

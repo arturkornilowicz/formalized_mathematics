@@ -82,7 +82,7 @@ public class Translation implements Comparable<Translation> {
 
     private String getOperationKind() {
         String c = getElement().attributeValue(TranslationNames.HEADER).substring(2, 3);
-        List<String> possibleOperationKinds = List.of("l","k","m","r","q","w","t","b","i","x","y","c");
+        List<String> possibleOperationKinds = List.of("l","k","m","r","q","w","t","b","i","x","y","c","{");
         if (possibleOperationKinds.contains(c) && getKind().equals("O")) {
             return c;
         }
@@ -118,6 +118,10 @@ public class Translation implements Comparable<Translation> {
         }
     }
 
+    private static boolean firstChar(String string, char c) {
+        return !string.trim().equals("") && string.trim().charAt(0) == c;
+    }
+
     public static Representation texRepr(XMLElement xmlElement, Arguments arguments, boolean withoutFirst) {
         try {
             String result = "";
@@ -131,6 +135,7 @@ public class Translation implements Comparable<Translation> {
 //        System.out.println(xmlElement.getElement().attributeValue(ESXAttributeName.XMLID));
 //        System.out.println(arguments.getArguments().size());
 //        System.out.println(translation.getAbsolutePatternMMLID());
+            String text;
             for (Node node : translation.computePattern()) {
                 if (node.getClass().getName().equals("org.dom4j.tree.DefaultElement")) {
                     locusNr = Integer.parseInt(((Element) node).attributeValue("locus"));
@@ -144,7 +149,9 @@ public class Translation implements Comparable<Translation> {
                         result += arguments.getArguments().get(locusNr - 1).texRepr(RepresentationCase.GENERAL);
                     }
                 } else {
-                    result += node.getText();
+                    //TODO check spaces
+                    text = node.getText();
+                    result += firstChar(text,'\\') ? LaTeX.ensureMath(text.replace(" ","\\ ")) : text;
                 }
             }
             switch (translation.getElement().attributeValue(TranslationNames.TEX_MODE)) {
@@ -152,11 +159,10 @@ public class Translation implements Comparable<Translation> {
                     result = arguments.getArguments().get(0).texRepr(RepresentationCase.GENERAL) + " is " + result;
                     break;
                 case "m":
-                    result = LaTeX.ensureMath(result);
+//                    result = LaTeX.ensureMath(result);
                     break;
                 case "h":
-                    result = result;
-//                result = LaTeX.text(result);
+//                    result = LaTeX.text(result);
                     break;
             }
             return new Representation(result, translation);
@@ -173,6 +179,194 @@ public class Translation implements Comparable<Translation> {
             exception.printStackTrace();
             throw new RuntimeException("Exception in texRepr_3 caused by " + xmlElement.getElement().attributeValue(ESXAttributeName.XMLID));
         }
+    }
+
+    private static boolean addBrackets(Translation translation, Representation argRepresentation, int thisPriority, int argPriority, int locusNr) {
+        return argRepresentation.openTerm
+                && argPriority <= thisPriority
+//                &&
+//                (
+//                        locusNr == 1
+//                                && translation.getOperationKind().equals(OperationKind.UPPER_POSTFIX)
+//                                ||
+//                                false
+//                )
+                ;
+    }
+
+    @Deprecated
+    public static Representation texReprInfix_OLD_GB_nizej(XMLElement xmlElement, Arguments arguments, boolean withoutFirst) {
+        //TODO GB nizej
+        try {
+            String result = "";
+            Translation translation = xmlElement.translation();
+            Representation argRepresentation = null;
+            if (translation == null) {
+                Errors.logMissing(xmlElement.getElement());
+                Errors.logException(new Exception("Unknown translation 3"), xmlElement.getElement().toString());
+            }
+            Term arg;
+            Integer argPriority;
+            Integer thisPriority = Integer.parseInt(translation.getElement().attributeValue(TranslationNames.PRIORITY));
+            int locusNr;
+            for (Node node : translation.computePattern()) {
+                if (node.getClass().getName().equals("org.dom4j.tree.DefaultElement")) {
+                    locusNr = Integer.parseInt(((Element) node).attributeValue("locus"));
+                    argPriority = Integer.MAX_VALUE;
+                    if (withoutFirst) {
+                        if (locusNr > 1) {
+                            arg = arguments.getArguments().get(locusNr - 1);
+                            //TODO other cases
+                            if (arg instanceof InfixTerm) {
+                                argPriority = Integer.parseInt(arg.translation().getElement().attributeValue(TranslationNames.PRIORITY));
+                            }
+                            if (argPriority <= thisPriority) {
+                                result += LaTeX.ensureMath(Texts.LB2);
+                            }
+                            result += arguments.getArguments().get(locusNr - 1).texRepr(RepresentationCase.GENERAL);
+                            if (argPriority <= thisPriority) {
+                                result += LaTeX.ensureMath(Texts.RB2);
+                            }
+                        } else {
+                            result += "";
+                        }
+                    } else {
+                        arg = arguments.getArguments().get(locusNr - 1);
+                        argRepresentation = arg.texRepr(RepresentationCase.GENERAL);
+
+                        if (arg instanceof InfixTerm) {
+                            argPriority = Integer.parseInt(arg.translation().getElement().attributeValue(TranslationNames.PRIORITY));
+                        }
+
+                        boolean addBrackets = addBrackets(translation,argRepresentation,thisPriority,argPriority,locusNr);
+
+                        //TODO other cases
+
+                        if (addBrackets) {
+                            result += LaTeX.ensureMath("\\left" + Texts.LB3);
+                        }
+
+                        result += argRepresentation;
+
+                        if (addBrackets) {
+                            result += LaTeX.ensureMath("\\right" + Texts.RB3);
+                        }
+
+//OK                    result += arguments.getArguments().get(locusNr - 1).texRepr();
+                    }
+                } else {
+                    result += node.getText();
+                }
+            }
+            if (translation.getElement().attributeValue(TranslationNames.TEX_MODE).equals("m")) {
+                result = LaTeX.ensureMath(result);
+            } else {
+                if (translation.getElement().attributeValue(TranslationNames.TEX_MODE).equals("h")) {
+                    result = LaTeX.text(result);
+                }
+            }
+            return new Representation(result, translation);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new RuntimeException("Exception in texRepr_4 caused by " + xmlElement.getElement().attributeValue(ESXAttributeName.XMLID));
+        }
+    }
+
+    private static String[] context(Translation translation) {
+        int contextNbr = 15;
+        String[] result = new String[contextNbr];
+        for (int i = 0; i < contextNbr; i++) {
+            if (translation.getElement().attribute("context" + (i+1)) != null) {
+                result[i] = translation.getElement().attributeValue("context" + (i + 1));
+            } else {
+                result[i] = "";
+            }
+        }
+        return result;
+    }
+
+    private static boolean addBracketsGB(Translation translation, Term arg, int locusNr) {
+        //TODO from article2latex
+
+        int thisPriority = Integer.parseInt(translation.getElement().attributeValue(TranslationNames.PRIORITY));
+
+        Translation argTranslation = arg.translation();
+        int argPriority = Integer.MAX_VALUE;
+
+        if (arg instanceof InfixTerm) {
+            argPriority = Integer.parseInt(argTranslation.getElement().attributeValue(TranslationNames.PRIORITY));
+        }
+
+//        not(contains(@header,'c'))
+//        and
+//         (
+//              ($Priority &gt; @priority) and ($prohibited != 'y')
+//
+//               or
+//
+//                (
+        //wazne nizej dodaje do |^
+//                        ($Priority &gt;= @priority) and (contains(@forcing, $Context)) and ($prohibited != 'y') and ($Context != '')
+//                            or
+//                         ($Priority = @priority) and ($RIGHT)
+//                            or
+//                         ../@bracket = 1
+//                            or
+//                         $bracket = 'ok'
+//                )
+//                and
+//                ($prohibited != 'y')
+//
+//                or
+//
+//                ../../../Translation/@kind = 'V'
+//         )
+
+
+        String header = translation.getElement().attributeValue(TranslationNames.HEADER);
+        boolean prohibited = header.contains("#"+locusNr);
+        boolean right = header.equals("moi");
+        String forcing = translation.getElement().attributeValue(TranslationNames.FORCING);
+        
+
+//        System.out.println("\n\nheader = " + header);
+//        System.out.println("forcing = " + forcing);
+//        System.out.println(header.contains(forcing));
+//        System.out.println(locusNr + " " + prohibited);
+//        System.out.println("prohibited = " + prohibited);
+
+
+        String[] context = context(translation);
+
+        String context1 = context[0];
+
+        Representation argRepresentation = arg.texRepr(RepresentationCase.GENERAL);
+
+        return
+                argRepresentation.openTerm
+                &&
+                        argPriority < thisPriority
+                &&
+                        !prohibited
+
+                        ||
+
+                        argPriority == thisPriority
+                        &&
+                                right
+
+                        ||
+
+                        argPriority <= thisPriority
+                                &&
+                                !context1.equals("")
+                                &&
+                                forcing.contains(context1)
+                                &&
+                                !prohibited
+                ;
+
+
     }
 
     public static Representation texReprInfix(XMLElement xmlElement, Arguments arguments, boolean withoutFirst) {
@@ -217,23 +411,20 @@ public class Translation implements Comparable<Translation> {
                             argPriority = Integer.parseInt(arg.translation().getElement().attributeValue(TranslationNames.PRIORITY));
                         }
 
-                        boolean addBrackets =
-                                argRepresentation.openTerm
-                                        && argPriority <= thisPriority
-
-                                        && locusNr == 1
-                                        && translation.getOperationKind().equals(OperationKind.UPPER_POSTFIX);
+                        boolean addBrackets = addBracketsGB(translation,arg,locusNr);
 
                         //TODO other cases
 
                         if (addBrackets) {
-                            result += LaTeX.ensureMath("\\left" + Texts.LB3);
+//                            result += LaTeX.ensureMath("\\left" + Texts.LB3);
+                            result += LaTeX.ensureMath(Texts.LB3);
                         }
 
                         result += argRepresentation;
 
                         if (addBrackets) {
-                            result += LaTeX.ensureMath("\\right" + Texts.RB3);
+//                            result += LaTeX.ensureMath("\\right" + Texts.RB3);
+                            result += LaTeX.ensureMath(Texts.RB3);
                         }
 
 //OK                    result += arguments.getArguments().get(locusNr - 1).texRepr();

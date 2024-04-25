@@ -37,7 +37,7 @@ public interface Texts {
     String T7 = " deals with ";
     String T7a = "\nand states that ";
     String T7b = "\nprovided the following requirements are met: ";
-    String T7c = "\nprovided the parameters satisfy the following condition ";
+    String T7c = "\nprovided the parameters satisfy the following condition: ";
     String T8s = "\nLet us assume that there exists ";
     String T8p = "\nLet us assume that there exist ";
 

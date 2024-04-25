@@ -36,6 +36,6 @@ public class PrivateFunctorTerm extends Term {
     @Override
     public Representation texRepr(Integer representationCase) {
         boolean bracketed = arguments.getArguments().size() > 0;
-        return new Representation(LaTeX.ensureMath(LaTeX.mathcal(LaTeX.spelling(this))) + (bracketed ? Texts.LB4 : "") + arguments.texRepr(RepresentationCase.ARGS_IN_PRIVATE) + (bracketed ? Texts.RB4 : ""));
+        return new Representation(LaTeX.mathcal(LaTeX.spelling(this)) + (bracketed ? Texts.LB4 : "") + arguments.texRepr(RepresentationCase.ARGS_IN_PRIVATE) + (bracketed ? Texts.RB4 : ""));
     }
 }

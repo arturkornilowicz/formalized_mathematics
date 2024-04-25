@@ -141,10 +141,10 @@ public class TranslationGenerator extends TranslationApplication {
         if (kind.equals("O")) {
             result.addAttribute("priority","5");
         }
-        result.addAttribute(TranslationNames.HEADER,"i");
+        result.addAttribute(TranslationNames.HEADER,"h");
+        result.addAttribute(TranslationNames.TEX_MODE,"h");
         result.addAttribute(TranslationNames.FORCING,"");
         result.addAttribute(TranslationNames.CONTEXT1,"");
-        result.addAttribute(TranslationNames.TEX_MODE,"h");
 
         result.add(generatePattern(format,symbol,kind,false));
 

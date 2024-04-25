@@ -42,13 +42,13 @@ public class FraenkelTerm extends Term {
     @Override
     public Representation texRepr(Integer representationCase) {
         //TODO be -> is in where
-        String result = LaTeX.ensureMath("\\{");
+        String result = "\\{";
         result += term.texRepr(representationCase);
         if (variableSegments.getSegments().size() > 0) {
-            result += LaTeX.text( Texts.WHERE + variableSegments.texRepr(representationCase));
+            result += Texts.WHERE + variableSegments.texRepr(representationCase);
         }
         result += ": " + formula.texRepr(representationCase);
-        result += LaTeX.ensureMath("\\}");
+        result += "\\}";
         return new Representation(result);
     }
 }

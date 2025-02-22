@@ -8,6 +8,7 @@ import org.dom4j.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class Exemplification extends Item {
 
     private List<ExemplificationKind> examples = new LinkedList<>();

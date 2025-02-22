@@ -9,6 +9,7 @@ import org.mizar.xml_names.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class RegularStatement extends Item {
 
     public RegularStatement(Element element) {

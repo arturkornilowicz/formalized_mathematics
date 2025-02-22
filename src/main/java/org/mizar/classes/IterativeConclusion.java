@@ -8,6 +8,7 @@ import org.mizar.xml_names.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class IterativeConclusion extends Conclusion {
 
     private IterativeEquality iterativeEquality;

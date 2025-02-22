@@ -7,6 +7,7 @@ import org.dom4j.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class PerCases extends Item {
 
     private Justification justification;

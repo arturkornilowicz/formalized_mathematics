@@ -68,7 +68,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>org.mizar.pub.Pub2Pub</mainClass>
+                <mainClass>org.mizar.notions.MapOfNotions</mainClass>
               </manifest>
             </archive>
           </configuration>
@@ -88,7 +88,7 @@
               <configuration>
                 <archive>
                   <manifest>
-                    <mainClass>org.mizar.pub.Pub2Pub</mainClass>
+                    <mainClass>org.mizar.notions.MapOfNotions</mainClass>
                   </manifest>
                 </archive>
                 <descriptorRefs>

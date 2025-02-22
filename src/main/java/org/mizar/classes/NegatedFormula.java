@@ -3,6 +3,10 @@ package org.mizar.classes;
 import lombok.*;
 import org.dom4j.*;
 import org.mizar.latex.*;
+import org.mizar.xml_names.ESXElementName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -30,6 +34,10 @@ public class NegatedFormula extends Formula {
 
     @Override
     public Representation texRepr(Integer representationCase) {
-        return new Representation(" not " + formula.texRepr(representationCase));
+        if (formula instanceof BinaryFormula) {
+            return new Representation(" not (" + formula.texRepr(representationCase) + ")");
+        } else {
+            return new Representation(" not " + formula.texRepr(representationCase));
+        }
     }
 }

@@ -37,12 +37,12 @@ public class ExistentialRegistration extends Cluster {
     }
 
     private String verb() {
-        return "";
-//        return switch (adjectiveCluster.getAdjectiveKind()) {
-//            case AdjectiveKind.HAS -> " has ";
-//            case AdjectiveKind.SAT -> " satisfies ";
-//            default -> " is ";
-//        };
+        //return "";
+        return switch (adjectiveCluster.getAdjectiveKind()) {
+            case AdjectiveKind.HAS -> " has ";
+            case AdjectiveKind.SAT -> " satisfies ";
+            default -> " is ";
+        };
     }
 
     @Override

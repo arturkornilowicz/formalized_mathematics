@@ -9,6 +9,7 @@ import org.mizar.xml_names.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class ConstantDefinition extends Item {
 
     private List<Equating> equatings = new LinkedList<>();

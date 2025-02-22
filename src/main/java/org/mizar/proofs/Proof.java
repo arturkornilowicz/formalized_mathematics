@@ -2,6 +2,7 @@ package org.mizar.proofs;
 
 import org.dom4j.*;
 import org.mizar.application.FormalizedMathematics;
+import org.mizar.application.XMLApplication;
 import org.mizar.classes.*;
 import org.mizar.latex.*;
 import org.mizar.xml_names.*;
@@ -27,16 +28,41 @@ public class Proof {
         PrivatePredicateDefinition result = null;
         //TODO incorrect predicate
         Element element = (Element)theoremItem.getElement().selectSingleNode(".//" + ESXElementName.PRIVATE_PREDICATE_FORMULA);
-        System.out.println(element.attributeValue(ESXAttributeName.SERIALNR));
         Element node;
         for (Node e: FormalizedMathematics.privatePredicates) {
             node = (Element)e;
-            System.out.println(node.element(ESXElementName.VARIABLE).attributeValue(ESXAttributeName.SERIALNR));
             if (node.element(ESXElementName.VARIABLE).attributeValue(ESXAttributeName.SERIALNR).equals(element.attributeValue(ESXAttributeName.SERIALNR))) {
                 result = new PrivatePredicateDefinition(node);
             }
         }
         return result;
+    }
+
+    private static String schemeAlias(String fileName, String schemeNr) {
+        Document document = XMLApplication.loadDocument("test/" + fileName);
+        List<Node> items2 = document.getRootElement().selectNodes(".//" + ESXElementName.ITEM);
+        Element e, p;
+        for (int i = 0; i < items2.size(); i++) {
+            e = (Element)items2.get(i);
+            if (e.attributeValue(ESXAttributeName.KIND).equals(ESXElementName.SCHEME_BLOCK_ITEM)) {
+                if (e.elements().get(0).attributeValue(ESXAttributeName.MMLID).equals(schemeNr)) {
+                    // TODO find correct PRAGMA
+                    p = (Element) items2.get(i - 1);
+                    if (p.attributeValue(ESXAttributeName.KIND).equals(ESXElementName.PRAGMA)) {
+                        if (p.elements().get(0).elements().get(0).getName().equals("Alias")) {
+                            return p.elements().get(0).elements().get(0).attributeValue(ESXAttributeName.INSCRIPTION);
+                        }
+                    }
+                    p = (Element) items2.get(i - 2);
+                    if (p.attributeValue(ESXAttributeName.KIND).equals(ESXElementName.PRAGMA)) {
+                        if (p.elements().get(0).elements().get(0).getName().equals("Alias")) {
+                            return p.elements().get(0).elements().get(0).attributeValue(ESXAttributeName.INSCRIPTION);
+                        }
+                    }
+                }
+            }
+        }
+        return "";
     }
 
     public static String isProvedByScheme(TheoremItem theoremItem) {
@@ -45,21 +71,30 @@ public class Proof {
             Element block = theoremItem.getJustification().getElement();
             List<Node> items = theoremItem.getElement().selectNodes(".//" + ESXElementName.ITEM);
             if (items.size() > 2) {
+                if (((Element) items.get(items.size() - 2)).elements().get(0).elements().size() < 2 ||
+                    (!((Element) items.get(items.size() - 2)).elements().get(0).elements().get(1).getName().equals(ESXElementName.SCHEME_JUSTIFICATION))) {
+                        return "";
+                }
                 Element justification = ((Element) items.get(items.size() - 2)).elements().get(0).elements().get(1);
-                System.out.println(theoremItem.getJustification().getElement().getName());
-                System.out.println(theoremItem.getElement().attributeValue(ESXAttributeName.MMLID));
-                System.out.println(justification.getName());
-                if (true) {
-                    result += "ALA";
-                    return result.equals("") ? "" : privatePredicate(theoremItem, justification).texRepr(RepresentationCase.PREDICATE_IN_SCHEME)
-                            + " The proof goes by the scheme of mathematical induction "
-                            + justification.attributeValue(ESXAttributeName.MMLID).replace("_","\\_")
-                            + ". ";
+                if (justification.getName().equals(ESXElementName.SCHEME_JUSTIFICATION)) {
+                    String schemeNr = justification.attributeValue(ESXAttributeName.MMLID);
+                    String fileWithSchemeName = justification.attributeValue(ESXAttributeName.MMLID).toLowerCase().split(":")[0] + ".esx";
+                    String alias = schemeAlias(fileWithSchemeName,schemeNr);
+
+                    if (alias.length() > 0) {
+                        return result.equals("") && alias.length() == 0 ? "" : privatePredicate(theoremItem, justification).texRepr(RepresentationCase.PREDICATE_IN_SCHEME)
+                                + " The proof goes by " + LaTeX.italic(alias)
+                                //+ justification.attributeValue(ESXAttributeName.MMLID).replace("_","\\_")
+                                + ". ";
+                    } else {
+                        return result;
+                    }
                 }
             }
         }
         return "";
     }
+
     public static String isProvedByByLocalTheorems(TheoremItem theoremItem) {
         String result = "";
         List<Element> localTheorems;
@@ -78,18 +113,18 @@ public class Proof {
 
     public static String proof(TheoremItem theoremItem) {
         // TODO
-//        String beginning = "\nPROOF: ";
-//        String ending = " " + LaTeX.ensureMath(LaTeX.qed());
-//        String isProvedByScheme = isProvedByScheme(theoremItem);
-//        if (!isProvedByScheme.equals("")) {
-//            return beginning + isProvedByScheme + ending;
-//        } else {
-//            String isProvedByByLocalTheorems = isProvedByByLocalTheorems(theoremItem);
-//            if (!isProvedByByLocalTheorems.equals("")) {
-//                return isProvedByByLocalTheorems;
-//            } else {
-//            }
-//        }
+        String beginning = "\nPROOF: ";
+        String ending = " " + LaTeX.ensureMath(LaTeX.qed());
+        String isProvedByScheme = isProvedByScheme(theoremItem);
+        if (!isProvedByScheme.equals("")) {
+            return beginning + isProvedByScheme + ending;
+        } else {
+            String isProvedByByLocalTheorems = isProvedByByLocalTheorems(theoremItem);
+            if (!isProvedByByLocalTheorems.equals("")) {
+                return isProvedByByLocalTheorems;
+            } else {
+            }
+        }
         return "";
     }
 }

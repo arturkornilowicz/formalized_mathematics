@@ -8,6 +8,7 @@ import org.mizar.xml_names.*;
 @Getter
 @ToString
 
+@_Nonpublicable
 public class ChoiceStatement extends Item {
 
     private QualifiedSegments qualifiedSegments;

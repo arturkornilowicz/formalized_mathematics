@@ -158,9 +158,13 @@ public class LaTeX {
     }
 
     public static String unknown(Class<?> class1) {
-        Errors.logUnknown(class1);
-        Errors.unknown(class1);
-        return "\\phantom{}\\newline{\\small\\color{red}UNKNOWN " + class1.getName() + "}";
+        if (class1.getAnnotation(_Nonpublicable.class) == null) {
+            Errors.logUnknown(class1);
+            Errors.unknown(class1);
+            return "\\phantom{}\\newline{\\small\\color{red}UNKNOWN " + class1.getName() + "}";
+        } else {
+            return "";
+        }
     }
 
     public static String spelling(XMLElement xmlElement) {
@@ -168,45 +172,50 @@ public class LaTeX {
     }
 
     public static String texReprMath(List<? extends XMLElement> xmlElements) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int i;
         for (i = 0; i < xmlElements.size()-1; i++) {
-            result += xmlElements.get(i).texRepr(RepresentationCase.GENERAL) + ", ";
+            result.append(xmlElements.get(i).texRepr(RepresentationCase.GENERAL));
+            result.append(", ");
         }
-        result += xmlElements.get(i).texRepr(RepresentationCase.GENERAL);
-        return LaTeX.ensureMath(result);
+        result.append(xmlElements.get(i).texRepr(RepresentationCase.GENERAL));
+        return LaTeX.ensureMath(result.toString());
     }
 
     public static String texReprMathCal(List<? extends Variable> xmlElements) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int i;
         for (i = 0; i < xmlElements.size()-1; i++) {
-            result += LaTeX.mathcal(xmlElements.get(i).getElement().attributeValue(ESXAttributeName.SPELLING)) + ", ";
+            result.append(LaTeX.mathcal(xmlElements.get(i).getElement().attributeValue(ESXAttributeName.SPELLING)));
+            result.append(", ");
         }
-        result += LaTeX.mathcal(xmlElements.get(i).getElement().attributeValue(ESXAttributeName.SPELLING));
-        return LaTeX.ensureMath(result);
+        result.append(LaTeX.mathcal(xmlElements.get(i).getElement().attributeValue(ESXAttributeName.SPELLING)));
+        return LaTeX.ensureMath(result.toString());
     }
 
     public static String texReprText(List<? extends XMLElement> xmlElements) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (xmlElements.size() > 0) {
             int i;
             for (i = 0; i < xmlElements.size() - 1; i++) {
-                result += xmlElements.get(i).texRepr(RepresentationCase.GENERAL) + ", ";
+                result.append(xmlElements.get(i).texRepr(RepresentationCase.GENERAL));
+                result.append(", ");
             }
-            result += xmlElements.get(i).texRepr(RepresentationCase.GENERAL);
+            result.append(xmlElements.get(i).texRepr(RepresentationCase.GENERAL));
         }
-        return result;
+        return result.toString();
     }
 
     public static String texReprTextAnd(List<? extends XMLElement> xmlElements, Integer representationCase) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int i;
         for (i = 0; i < xmlElements.size()-1; i++) {
-            result += xmlElements.get(i).texRepr(representationCase) + (xmlElements.size() > 2 ? ", " : "");
+            result.append(xmlElements.get(i).texRepr(representationCase));
+            result.append((xmlElements.size() > 2 ? ", " : ""));
         }
-        result += (i > 0 ? " and " : "" ) + xmlElements.get(i).texRepr(representationCase);
-        return result;
+        result.append(i > 0 ? " and " : "" );
+        result.append(xmlElements.get(i).texRepr(representationCase));
+        return result.toString();
     }
 
     public static void texTheorems(List<Item> theorems) {
@@ -234,13 +243,13 @@ public class LaTeX {
     }
 
     public static String texDefiniensesString(List<Definiens> definienses) {
-        String result = "";
-        result += "\n\n\\begin{description}\n";
+        StringBuilder result = new StringBuilder();
+        result.append("\n\n\\begin{description}\n");
         for (Definiens definiens: definienses) {
-            result += definiens.texDefiniensString();
+            result.append(definiens.texDefiniensString());
         }
-        result += "\n\\end{description}\n";
-        return result;
+        result.append("\n\\end{description}\n");
+        return result.toString();
     }
 
     public static void defDescriptionItem() {
